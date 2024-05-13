@@ -1,0 +1,42 @@
+# This file provides the logic to create persistent volumes on the KinD cluster
+---
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: local
+provisioner: kubernetes.io/no-provisioner
+---
+# Persistent volume to store your DAGs. 
+# This maps to the /dags location specified in "kind-cluster.yaml"
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pv-dags
+spec:
+  capacity:
+    storage: 50Mi
+  accessModes:
+    - ReadOnlyMany
+  storageClassName: local
+  volumeMode: Filesystem
+  hostPath:
+    path: /dags
+  persistentVolumeReclaimPolicy: Retain
+---
+# Persistent volume to store your DAGs. 
+# This maps to the /logs location specified in "kind-cluster.yaml"
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pv-logs
+spec:
+  capacity:
+    storage: 100Mi
+  accessModes:
+    - ReadWriteMany
+  storageClassName: local
+  volumeMode: Filesystem
+  hostPath:
+    path: /logs
+  persistentVolumeReclaimPolicy: Retain
+

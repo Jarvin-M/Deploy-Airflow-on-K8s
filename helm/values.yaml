@@ -1,0 +1,58 @@
+# Ingress configuration
+ingress:
+  # Enable all ingress resources (deprecated - use ingress.web.enabled and ingress.flower.enabled)
+  enabled: ~
+
+  # Configs for the Ingress of the web Service
+  web:
+    # Enable web ingress resource
+    enabled: true
+
+    # The path for the web Ingress
+    path: "/"
+
+    # The pathType for the above path (used only with Kubernetes v1.19 and above)
+    pathType: "ImplementationSpecific"
+
+    # The hostname for the web Ingress (Deprecated - renamed to `ingress.web.hosts`)
+    host: ""
+
+    # The hostnames or hosts configuration for the web Ingress
+    hosts: []
+    # The Ingress Class for the web Ingress (used only with Kubernetes v1.19 and above)
+    ingressClassName: "nginx"
+
+
+# Airflow executor
+# One of: LocalExecutor, LocalKubernetesExecutor, CeleryExecutor, KubernetesExecutor, CeleryKubernetesExecutor
+executor: "KubernetesExecutor"
+
+config:
+  webserver:
+    expose_config: 'True'
+dags:
+  persistence:
+    # Annotations for dags PVC
+    enabled: true
+    # Volume size for dags
+    size: 50Mi
+    # If using a custom storageClass, pass name here
+    storageClassName: local-storage
+    # access mode of the persistent volume
+    accessMode: ReadOnlyMany
+    ## the name of an existing PVC to use
+    existingClaim: airflow-pv-dags
+
+logs:
+  persistence:
+    # Enable persistent volume for storing logs
+    enabled: true
+    # Volume size for logs
+    size: 100Mi
+    # Annotations for the logs PVC
+    annotations: {}
+    # If using a custom storageClass, pass name here
+    storageClassName: local-storage
+    ## the name of an existing PVC to use
+    existingClaim: airflow-pv-logs
+

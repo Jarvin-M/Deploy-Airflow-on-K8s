@@ -1,0 +1,44 @@
+---
+kind: Cluster
+apiVersion: kind.x-k8s.io/v1alpha4
+name: airflow-tutorial-cluster
+nodes:
+  - role: control-plane
+    image: kindest/node:v1.27.1
+    # https://kind.sigs.k8s.io/docs/user/configuration/#extra-mounts
+    extraMounts:
+      - hostPath: /Users/jmutatiina/dev/k8s_blog/dags
+        containerPath: /dags
+      - hostPath: /Users/jmutatiina/dev/k8s_blog/logs
+        containerPath: /logs
+    # https://kind.sigs.k8s.io/docs/user/ingress/#create-cluster
+    kubeadmConfigPatches:  
+      - |
+        kind: InitConfiguration
+        nodeRegistration:
+          kubeletExtraArgs:
+            node-labels: "ingress-ready=true"
+    # https://kind.sigs.k8s.io/docs/user/ingress/#create-cluster
+    extraPortMappings:
+      - containerPort: 80
+        hostPort: 80
+        protocol: TCP
+      - containerPort: 443
+        hostPort: 443
+        protocol: TCP
+  - role: worker
+    image: kindest/node:v1.27.1
+    # https://kind.sigs.k8s.io/docs/user/configuration/#extra-mounts
+    extraMounts:
+      - hostPath: /Users/jmutatiina/dev/k8s_blog/dags
+        containerPath: /dags
+      - hostPath: /Users/jmutatiina/dev/k8s_blog/logs
+        containerPath: /logs
+  - role: worker
+    # https://kind.sigs.k8s.io/docs/user/configuration/#extra-mounts
+    image: kindest/node:v1.27.1
+    extraMounts:
+      - hostPath: /Users/jmutatiina/dev/k8s_blog/dags
+        containerPath: /dags
+      - hostPath: /Users/jmutatiina/dev/k8s_blog/logs
+        containerPath: /logs

@@ -1,0 +1,31 @@
+# Persistent volume claims to bind to PV
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: pv-dags
+  namespace: airflow
+  labels:
+    app: pv-dags
+spec:
+  storageClassName: local
+  accessModes:
+    - ReadOnlyMany
+  resources:
+    requests:
+      storage: 50Mi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: pv-logs
+  namespace: airflow
+  labels:
+    app: pv-logs
+spec:
+  storageClassName: local
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 100Mi
