@@ -8,11 +8,13 @@ This is part of a blog post - see link for complete blog
 3. Setup local K8s KinD cluster with cluster definition in `kind-cluster.yaml`. Within the cluster definition, we can pass storage from your host (local file system in this case) to the KinD node via `extraMounts` to persist data or files - [documentation](https://kind.sigs.k8s.io/docs/user/configuration/#extra-mounts).
     1. In this example we want to persist the Airflow DAG and log files. Update `hostPath` to a location on your local machine
 
-            ```extraMounts:
-                - hostPath: /<path-to-dir>/airflow_on_k8s/dags
-                    containerPath: /dags
-                - hostPath: /<path-to-dir>/airflow_on_k8s/logs
-                    containerPath: /logs```
+        ```yaml
+        extraMounts:
+            - hostPath: /<path-to-dir>/airflow_on_k8s/dags
+                containerPath: /dags
+            - hostPath: /<path-to-dir>/airflow_on_k8s/logs
+                containerPath: /logs
+        ```
     3. The paths set in this step will later be mounted to our Airflow deployment and act as persisted storage
     4. Create cluster- ` kind create cluster --config kind-cluster.yaml `
         1. At the end of this tutorial you can clean up the cluster and associated elements by - `kind delete cluster --name airflow-tutorial-cluster`
@@ -43,7 +45,7 @@ This is part of a blog post - see link for complete blog
                     1. Change executor config setting to `KubernetesExecutor` - there are [multiple Airflow executors](https://docs.astronomer.io/learn/airflow-executors-explained) with varying pros and cons and suitable usecases. I chose Kubernetes executor because of its resource optimization and scaling capabilities where it can dynamically launch pods for every task and terminate the pods when task is completed. 
                     2. Enable web ingress to ensure we can route external traffic via the Ingress controller to our deployment. This will make the Airflow UI accessible. Read more about how you can configure [Path Types](https://kubernetes.io/docs/concepts/services-networking/ingress/#path-types) and [DNS hosts](https://kubernetes.io/docs/concepts/services-networking/ingress/#path-types)
                         
-                        ```
+                        ```yaml
                         web:
                             # Enable web ingress resource
                             enabled: true
